@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import SurveyQuestion from './SurveyQuestion';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface SurveyQuestion {
+  id: number;
+  question: string;
+  answer: string;
 }
 
-export default App;
+const Survey: React.FC = () => {
+  const [questions, setQuestions] = useState<SurveyQuestion[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<string>('');
+  const [currentAnswer, setCurrentAnswer] = useState<string>('');
+
+  const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentQuestion(event.target.value);
+  };
+
+  const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentAnswer(event.target.value);
+  };
+
+  const handleAddQuestion = () => {
+    setQuestions([...questions, { id: questions.length + 1, question: currentQuestion, answer: currentAnswer }]);
+    setCurrentQuestion('');
+    setCurrentAnswer('');
+  };
+
+  return (
+    <div>
+      <h1>Create a Survey</h1>
+      <div>
+        <label htmlFor="question-input">Question:</label>
+        <input id="question-input" type="text" value={currentQuestion} onChange={handleQuestionChange} />
+      </div>
+      <div>
+        <label htmlFor="answer-input">Answer:</label>
+        <input id="answer-input" type="text" value={currentAnswer} onChange={handleAnswerChange} />
+      </div>
+      <button onClick={handleAddQuestion}>Add Question</button>
+      <h2>Survey Questions:</h2>
+      {questions.map((question) => (
+        <SurveyQuestion key={question.id} question={question.question} answer={question.answer} />
+      ))}
+    </div>
+  );
+};
+
+export default Survey;
